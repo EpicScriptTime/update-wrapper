@@ -1,0 +1,24 @@
+--- ansible/plugins/connection/ssh.py	2017-03-02 18:01:33.000000000 -0500
++++ updatewrapper/connection/ssh.py	2017-03-03 23:21:46.000000000 -0500
+@@ -224,6 +224,10 @@
+ 
+         controlpersist, controlpath = self._persistence_controls(b_command)
+ 
++        # UPDATE-WRAPPER START
++        controlpersist = False
++        # UPDATE-WRAPPER END
++
+         if controlpersist:
+             self._persistent = True
+ 
+@@ -460,6 +464,10 @@
+                     # not going to arrive until the persisted connection closes.
+                     timeout = 1
+                 b_tmp_stdout += b_chunk
++                # UPDATE-WRAPPER START
++                if state >= states.index('ready_to_send'):
++                    print(to_text(b_chunk), end='')
++                # UPDATE-WRAPPER END
+                 display.debug("stdout chunk (state=%s):\n>>>%s<<<\n" % (state, to_text(b_chunk)))
+ 
+             if p.stderr in rfd:
