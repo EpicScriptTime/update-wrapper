@@ -1,0 +1,7 @@
+hosts:
+  localhost:
+    addr: localhost
+    port: 22
+    user: root
+    sudo: false
+    sudo_pass: false
