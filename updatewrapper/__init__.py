@@ -2,11 +2,10 @@ import getopt
 import os
 import sys
 
-from ansible.module_utils._text import to_bytes
-
 from updatewrapper.host import Host
 from updatewrapper.utils.display import ask_yes_no, print_banner, print_info, print_notice, print_success, print_warning, spinner_list
 from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, save_output
+from updatewrapper.wrapper import Wrapper
 
 
 def wrap(hosts, out_dir):
@@ -22,22 +21,23 @@ def wrap(hosts, out_dir):
     print()
     for host in hosts:
         try:
+            wrapper = Wrapper(host)
+
             print_info('BEGIN host %s' % host.addr)
             host.ask_passwords()
 
-            print_success('Updating APT index files')
-            host.run('apt-get update')
+            print_success('Updating index cache')
+            wrapper.update_cache()
 
             print_success('Listing available package upgrades')
-            returncode, stdout, stderr = host.run('apt-get --show-upgraded --assume-no upgrade')
+            returns = wrapper.check_update()
 
-            if to_bytes('The following packages will be upgraded') in stdout:
+            if wrapper.has_update(*returns):
                 print_warning('Some packages need to be upgraded')
 
                 if ask_yes_no('Do you want to continue?'):
-
                     print_success('Installing available package upgrades')
-                    returncode, stdout, stderr = host.run('apt-get --show-upgraded --assume-yes upgrade')
+                    returncode, stdout, stderr = wrapper.perform_update()
 
                     logfile = get_logfile(host.name, out_dir)
                     save_output(logfile, stdout)
