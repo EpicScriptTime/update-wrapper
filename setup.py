@@ -10,7 +10,7 @@ with open('requirements.txt') as requirements_file:
 
 setup(
     name='update-wrapper',
-    version='1.3.0',
+    version='1.3.1',
     description='Simplify applying updates on multiple servers by wrapping the update process and logging the output.',
     keywords='update wrapper linux debian ansible djdch',
     url='https://github.com/EpicScriptTime/update-wrapper',
