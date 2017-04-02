@@ -8,7 +8,7 @@ from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, sa
 from updatewrapper.flavor import get_flavor_wrapper
 
 
-def wrap(hosts, out_dir):
+def wrap(hosts, out_dir, dist_upgrade):
     print_banner()
 
     logfiles = []
@@ -21,7 +21,7 @@ def wrap(hosts, out_dir):
     print()
     for host in hosts:
         try:
-            wrapper = get_flavor_wrapper(host)
+            wrapper = get_flavor_wrapper(host, dist_upgrade)
 
             print_info('BEGIN host %s' % host.addr)
             host.ask_passwords()
@@ -61,17 +61,19 @@ def wrap(hosts, out_dir):
 
 
 def main():
-    # TODO: Add --dist-upgrade option
-    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'host=', 'out-dir='])
+    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'host=', 'out-dir='])
 
     config_file = get_config_file()
     hosts = []
     host = None
     out_dir = os.getcwd()
+    dist_upgrade = False
 
     for opt in opts:
         if opt[0] in ('-c', '--config'):
             config_file = opt[1]
+        elif opt[0] == '--dist-upgrade':
+            dist_upgrade = True
         elif opt[0] in ('-h', '--host'):
             addr = opt[1]
             host = Host(addr=addr)  # TODO: Should allow to input other parameters or search from config
@@ -83,7 +85,7 @@ def main():
     else:
         hosts = get_hosts(config_file)
 
-    wrap(hosts, out_dir)
+    wrap(hosts, out_dir, dist_upgrade)
 
 
 if __name__ == "__main__":
