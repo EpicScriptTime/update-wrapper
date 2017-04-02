@@ -5,7 +5,7 @@ import sys
 from updatewrapper.host import Host
 from updatewrapper.utils.display import ask_yes_no, print_banner, print_info, print_notice, print_success, print_warning, spinner_list
 from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, save_output
-from updatewrapper.wrapper import Wrapper
+from updatewrapper.flavor import get_flavor_wrapper
 
 
 def wrap(hosts, out_dir):
@@ -21,7 +21,7 @@ def wrap(hosts, out_dir):
     print()
     for host in hosts:
         try:
-            wrapper = Wrapper(host)
+            wrapper = get_flavor_wrapper(host)
 
             print_info('BEGIN host %s' % host.addr)
             host.ask_passwords()
