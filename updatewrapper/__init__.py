@@ -65,7 +65,6 @@ def main():
 
     config_file = get_config_file()
     hosts = []
-    host = None
     out_dir = os.getcwd()
     dist_upgrade = False
 
@@ -77,12 +76,11 @@ def main():
         elif opt[0] in ('-h', '--host'):
             addr = opt[1]
             host = Host(addr=addr)  # TODO: Should allow to input other parameters or search from config
+            hosts.append(host)
         elif opt[0] in ('-o', '--out-dir'):
             out_dir = opt[1]
 
-    if host:
-        hosts.append(host)
-    else:
+    if not hosts:
         hosts = get_hosts(config_file)
 
     wrap(hosts, out_dir, dist_upgrade)
