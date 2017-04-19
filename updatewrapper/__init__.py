@@ -61,9 +61,9 @@ def wrap(hosts, out_dir, dist_upgrade):
 
 
 def help():
-    print('usage: update-wrapper [--version] [--help] [-c <path> | --config <path>]')
-    print('                      [--dist-upgrade] [-h | --host <host>]')
-    print('                      [-o | --out-dir <path>]')
+    print('usage: update-wrapper [-c <path> | --config=<path>] [--dist-upgrade]')
+    print('                      [-h | --help] [--host=<host>]')
+    print('                      [-o <path> | --out-dir=<path>] [-v | --version]')
 
 
 def version():
@@ -72,7 +72,7 @@ def version():
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'host=', 'out-dir=', 'help', 'version'])
+        opts, args = getopt.getopt(sys.argv[1:], 'c:h:o:v', ['config=', 'dist-upgrade', 'host=', 'out-dir=', 'help', 'version'])
     except getopt.GetoptError as err:
         print(err)
         help()
@@ -89,12 +89,12 @@ def main():
             config_file = opt[1]
         elif opt[0] == '--dist-upgrade':
             dist_upgrade = True
-        elif opt[0] in ('-h', '--host'):
+        elif opt[0] == '--host':
             addr = opt[1]
             host = Host(addr=addr)  # TODO: Should allow to input other parameters or search from config
         elif opt[0] in ('-o', '--out-dir'):
             out_dir = opt[1]
-        elif opt[0] == '--help':
+        elif opt[0] in ('-h', '--help'):
             help()
             return
         elif opt[0] == '--version':
