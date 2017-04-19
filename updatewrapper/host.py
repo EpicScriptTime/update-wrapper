@@ -19,7 +19,7 @@ connection_loader = PluginLoader(
 
 
 class Host:
-    def __init__(self, name='localhost', addr='localhost', port='22', user='root', sudo=False, sudo_pass=False, flavor='debian'):
+    def __init__(self, name='localhost', addr='localhost', port='22', user='root', sudo=False, sudo_pass=False, flavor=None):
         self.name = addr if name is 'localhost' else name
         self.addr = name if addr is 'localhost' else addr
         self.port = port

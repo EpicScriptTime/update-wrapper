@@ -71,17 +71,19 @@ def get_logfile(name, path):
     return os.path.join(path, '{0}-update-{1}.log'.format(name, get_current_date()))
 
 
-def save_output(file, data):
+def bytes_to_text(data):
     encoding_errors = 'surrogate_then_replace'
 
     if isinstance(data, bytes):
-        output = to_text(data, errors=encoding_errors)
+        return to_text(data, errors=encoding_errors)
     elif not isinstance(data, str):
-        output = to_text(b''.join(data.readlines()), errors=encoding_errors)
+        return to_text(b''.join(data.readlines()), errors=encoding_errors)
     else:
-        output = data
+        return data
 
-    output = convert_console_output(output)
+
+def save_output(file, data):
+    output = convert_console_output(bytes_to_text(data))
 
     with open(file, 'a') as stream:
         stream.write(output)
