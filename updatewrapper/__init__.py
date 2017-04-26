@@ -8,12 +8,14 @@ from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, sa
 from updatewrapper.flavor import get_flavor_wrapper
 
 
-def wrap(hosts, out_dir, dist_upgrade):
+def wrap(hosts, out_dir, dist_upgrade, display_spinner):
     print_banner()
 
     logfiles = []
 
-    spinner_list(['Warming up', 'Initializing wrapper', 'Loading host list'])
+    if display_spinner:
+        spinner_list(['Warming up', 'Initializing wrapper', 'Loading host list'])
+
     print('Wrapping updates for the following hosts:')
     for host in hosts:
         print(' * %s' % host.name)
@@ -61,13 +63,14 @@ def wrap(hosts, out_dir, dist_upgrade):
 
 
 def main():
-    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'host=', 'out-dir='])
+    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'host=', 'out-dir=', 'with-spinner'])
 
     config_file = get_config_file()
     hosts = []
     host = None
     out_dir = os.getcwd()
     dist_upgrade = False
+    display_spinner = False
 
     for opt in opts:
         if opt[0] in ('-c', '--config'):
@@ -79,13 +82,15 @@ def main():
             host = Host(addr=addr)  # TODO: Should allow to input other parameters or search from config
         elif opt[0] in ('-o', '--out-dir'):
             out_dir = opt[1]
+        elif opt[0] == '--with-spinner':
+            display_spinner = True
 
     if host:
         hosts.append(host)
     else:
         hosts = get_hosts(config_file)
 
-    wrap(hosts, out_dir, dist_upgrade)
+    wrap(hosts, out_dir, dist_upgrade, display_spinner)
 
 
 if __name__ == "__main__":
