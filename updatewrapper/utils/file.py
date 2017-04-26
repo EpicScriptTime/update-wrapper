@@ -62,6 +62,10 @@ def get_hosts(file):
             data['name'] = name
 
             host = Host(**data)
+
+            if not host.enabled:
+                continue
+
             hosts.append(host)
 
     return hosts
