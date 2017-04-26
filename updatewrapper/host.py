@@ -19,7 +19,7 @@ connection_loader = PluginLoader(
 
 
 class Host:
-    def __init__(self, name='localhost', addr='localhost', port='22', user='root', sudo=False, sudo_pass=False, flavor=None):
+    def __init__(self, name='localhost', addr='localhost', port='22', user='root', sudo=False, sudo_pass=False, flavor=None, enabled=True):
         self.name = addr if name is 'localhost' else name
         self.addr = name if addr is 'localhost' else addr
         self.port = port
@@ -27,6 +27,7 @@ class Host:
         self.sudo = sudo or sudo_pass
         self.sudo_pass = sudo_pass
         self.flavor = flavor
+        self.enabled = enabled
 
         self._passwords = None
 

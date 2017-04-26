@@ -20,6 +20,10 @@ def wrap(hosts, out_dir, dist_upgrade):
     print()
     for host in hosts:
         try:
+            if not host.enabled:
+                print_warning('SKIPPING host %s' % host.addr)
+                continue
+
             print_info('BEGIN host %s' % host.addr)
             host.ask_passwords()
 
