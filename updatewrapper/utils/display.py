@@ -1,6 +1,4 @@
-import sys
 import termcolor
-import time
 
 
 def ask_yes_no(question, default=True, spacing=True):
@@ -72,34 +70,3 @@ def print_warning(text):
 def print_error(text):
     termcolor.cprint(text, 'red', attrs=['bold'])
     print()
-
-
-def spinner_list(texts, ticks=10):
-    max_size = len(max(texts, key=len)) + 4
-
-    for text in texts:
-        baseline = '\r' + text + '...'
-
-        for i in range(ticks):
-            if i % 4 == 0:
-                sys.stdout.write(baseline + '/')
-                sys.stdout.flush()
-            elif i % 4 == 1:
-                sys.stdout.write(baseline + '-')
-                sys.stdout.flush()
-            elif i % 4 == 2:
-                sys.stdout.write(baseline + '\\')
-                sys.stdout.flush()
-            elif i % 4 == 3:
-                sys.stdout.write(baseline + '|')
-                sys.stdout.flush()
-
-            time.sleep(0.1)
-
-        # Clear leftover
-        sys.stdout.write('\r' + ' ' * max_size)
-        sys.stdout.flush()
-
-    # Allow last line to be erased
-    sys.stdout.write('\r')
-    sys.stdout.flush()

@@ -3,7 +3,7 @@ import os
 import sys
 
 from updatewrapper.host import Host
-from updatewrapper.utils.display import ask_yes_no, print_banner, print_info, print_notice, print_success, print_warning, spinner_list
+from updatewrapper.utils.display import ask_yes_no, print_banner, print_info, print_notice, print_success, print_warning
 from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, save_output
 from updatewrapper.flavor import get_flavor_wrapper
 
@@ -13,7 +13,6 @@ def wrap(hosts, out_dir, dist_upgrade):
 
     logfiles = []
 
-    spinner_list(['Warming up', 'Initializing wrapper', 'Loading host list'])
     print('Wrapping updates for the following hosts:')
     for host in hosts:
         print(' * %s' % host.name)
