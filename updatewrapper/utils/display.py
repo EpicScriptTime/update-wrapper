@@ -3,7 +3,7 @@ import termcolor
 import time
 
 
-def ask_yes_no(question, default=True):
+def ask_yes_no(question, default=True, spacing=True):
     """
     Ask a yes/no question via raw_input() and return their answer.
 
@@ -28,7 +28,8 @@ def ask_yes_no(question, default=True):
     while True:
         choice = input(question + prompt).strip().lower()
 
-        print()  # Required for spacing
+        if spacing:
+            print()  # Required for spacing
 
         if default is not None and choice == '':
             return default
@@ -65,6 +66,11 @@ def print_success(text):
 
 def print_warning(text):
     termcolor.cprint(text, 'yellow', attrs=['bold'])
+    print()
+
+
+def print_error(text):
+    termcolor.cprint(text, 'red', attrs=['bold'])
     print()
 
 

@@ -38,6 +38,9 @@ from ansible.plugins.connection import ConnectionBase
 from ansible.utils.boolean import boolean
 from ansible.utils.path import unfrackpath, makedirs_safe
 
+# UPDATE-WRAPPER START
+from updatewrapper.utils.display import ask_yes_no, print_warning, print_error
+# UPDATE-WRAPPER END
 
 try:
     from __main__ import display
@@ -414,6 +417,11 @@ class Connection(ConnectionBase):
         b_stdout = b_stderr = b''
         b_tmp_stdout = b_tmp_stderr = b''
 
+        # UPDATE-WRAPPER START
+        b_stdout_previous = b_stderr_previous = b''
+        last_update = time.time()
+        # UPDATE-WRAPPER END
+
         self._flags = dict(
             become_prompt=False, become_success=False,
             become_error=False, become_nopasswd_error=False
@@ -546,6 +554,29 @@ class Connection(ConnectionBase):
 
             # Now we're awaiting_exit: has the child process exited? If it has,
             # and we've read all available output from it, we're done.
+
+            # UPDATE-WRAPPER START
+            if states[state] == 'awaiting_exit':
+                if b_stdout == b_stdout_previous and b_stderr == b_stderr_previous:
+                    if last_update + 30.0 < time.time():
+                        print()
+                        print()
+                        print_error('Output is stalling!')
+
+                        if ask_yes_no('Do you want to send input?', default=False, spacing=False):
+                            answer = input('> ')
+                            stdin.write(to_bytes(answer) + b'\n')
+
+                        print()
+                        print_warning('Resuming remote process')
+
+                        last_update = time.time()
+                else:
+                    last_update = time.time()
+
+                b_stdout_previous = b_stdout
+                b_stderr_previous = b_stderr
+            # UPDATE-WRAPPER END
 
             if p.poll() is not None:
                 if not rpipes or not rfd:
