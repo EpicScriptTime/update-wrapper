@@ -2,6 +2,10 @@ import abc
 import importlib
 
 
+def detect_flavor(host):
+    return host.run('if [ -f /etc/debian_version ]; then echo -n "debian"; elif [ -f /etc/redhat-release ]; then echo -n "redhad"; fi')
+
+
 def get_flavor_wrapper(host, dist_upgrade):
     flavor = host.flavor if host.flavor in ['debian', 'redhat'] else None
 

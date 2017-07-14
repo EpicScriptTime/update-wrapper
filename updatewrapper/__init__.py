@@ -5,7 +5,7 @@ import sys
 from updatewrapper.host import Host
 from updatewrapper.utils.display import ask_yes_no, print_banner, print_info, print_notice, print_success, print_warning
 from updatewrapper.utils.file import get_config_file, get_hosts, get_logfile, save_output
-from updatewrapper.flavor import get_flavor_wrapper
+from updatewrapper.flavor import detect_flavor, get_flavor_wrapper
 
 
 def wrap(hosts, out_dir, dist_upgrade):
@@ -20,10 +20,15 @@ def wrap(hosts, out_dir, dist_upgrade):
     print()
     for host in hosts:
         try:
-            wrapper = get_flavor_wrapper(host, dist_upgrade)
-
             print_info('BEGIN host %s' % host.addr)
             host.ask_passwords()
+
+            if host.flavor is None:
+                print_success('Detecting host flavor')
+                host.flavor = detect_flavor(host)[1].decode('utf-8')
+                print()
+
+            wrapper = get_flavor_wrapper(host, dist_upgrade)
 
             print_success('Updating index cache')
             wrapper.update_cache()
