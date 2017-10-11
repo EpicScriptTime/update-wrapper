@@ -59,13 +59,14 @@ def wrap(hosts, out_dir, dist_upgrade):
         for logfile in logfiles:
             print(' * %s' % os.path.basename(logfile))
 
-
 def main():
-    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'host=', 'out-dir='])
+    opts, args = getopt.getopt(sys.argv[1:], 'c:h:o', ['config=', 'dist-upgrade', 'exclude=', 'host=', 'include=', 'out-dir='])
 
     config_file = get_config_file()
     hosts = []
     host = None
+    included_hosts = []
+    excluded_hosts = []
     out_dir = os.getcwd()
     dist_upgrade = False
 
@@ -74,9 +75,13 @@ def main():
             config_file = opt[1]
         elif opt[0] == '--dist-upgrade':
             dist_upgrade = True
+        elif opt[0] == '--exclude':
+            excluded_hosts.append(opt[1])
         elif opt[0] in ('-h', '--host'):
             addr = opt[1]
             host = Host(addr=addr)  # TODO: Should allow to input other parameters or search from config
+        elif opt[0] == '--include':
+            included_hosts.append(opt[1])
         elif opt[0] in ('-o', '--out-dir'):
             out_dir = opt[1]
 
@@ -84,6 +89,12 @@ def main():
         hosts.append(host)
     else:
         hosts = get_hosts(config_file)
+
+    if included_hosts:
+        hosts = [host for host in hosts if host.name in included_hosts]
+
+    if excluded_hosts:
+        hosts = [host for host in hosts if host.name not in excluded_hosts]
 
     wrap(hosts, out_dir, dist_upgrade)
 
